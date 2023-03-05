@@ -1,0 +1,19 @@
+pom.xml.versionsBackup
+dependency-reduced-pom.xml
+equalsverifier-release-verify/src/test/resources
+
+.project
+.classpath
+.settings
+bin
+target
+.DS_Store
+
+# IntelliJ files
+.idea
+*.iml
+
+# JReleaser
+trace.log
+out/
+jreleaser-cli.jar
