@@ -1,20 +1,20 @@
 package nl.jqno.compression.algorithms;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
+import nl.jqno.compression.streams.InputCodeStream;
+import nl.jqno.compression.streams.OutputCodeStream;
 
 public class Lzw {
 
     private static final int EOF_CODE = 256;
 
-    public List<Integer> compress(String input) {
+    public void compress(String input, OutputCodeStream out) {
         var map = new HashMap<String, Integer>();
         for (int i = 0; i < EOF_CODE; i++) {
             map.put(Character.toString(i), i);
         }
 
-        var result = new ArrayList<Integer>();
         var nextCode = EOF_CODE + 1;
         var current = "";
         for (int i = 0; i < input.length(); i++) {
@@ -24,16 +24,14 @@ public class Lzw {
             } else {
                 map.put(candidate, nextCode);
                 nextCode++;
-                result.add(map.get(current));
+                out.write(map.get(current));
                 current = Character.toString(input.charAt(i));
             }
         }
-        result.add(map.get(current));
-
-        return result;
+        out.write(map.get(current));
     }
 
-    public String decompress(List<Integer> input) {
+    public String decompress(InputCodeStream input) {
         var map = new HashMap<Integer, String>();
         for (int i = 0; i < EOF_CODE; i++) {
             map.put(i, Character.toString(i));

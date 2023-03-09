@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+import nl.jqno.compression.streams.IntListInputCodeStream;
+import nl.jqno.compression.streams.IntListOutputCodeStream;
+
 public class LzwTest {
 
     private Lzw sut = new Lzw();
@@ -12,23 +15,26 @@ public class LzwTest {
     @Test
     void compress_happyPath() {
         var input = "ABBABBBABBA";
-        var actual = sut.compress(input);
+        var out = new IntListOutputCodeStream();
+        sut.compress(input, out);
         var expected = List.of(65, 66, 66, 257, 258, 260, 65);
-        assertEquals(expected, actual);
+        assertEquals(expected, out.getCodes());
     }
 
     @Test
     void compress_edgeCase() {
         var input = "ABABABA";
-        var actual = sut.compress(input);
+        var out = new IntListOutputCodeStream();
+        sut.compress(input, out);
         var expected = List.of(65, 66, 257, 259);
-        assertEquals(expected, actual);
+        assertEquals(expected, out.getCodes());
     }
 
     @Test
     void decompress_happyPath() {
         var input = List.of(65, 66, 66, 257, 258, 260, 65);
-        var actual = sut.decompress(input);
+        var in = new IntListInputCodeStream(input);
+        var actual = sut.decompress(in);
         var expected = "ABBABBBABBA";
         assertEquals(expected, actual);
     }
@@ -36,7 +42,8 @@ public class LzwTest {
     @Test
     void decompress_edgeCase() {
         var input = List.of(65, 66, 257, 259);
-        var actual = sut.decompress(input);
+        var in = new IntListInputCodeStream(input);
+        var actual = sut.decompress(in);
         var expected = "ABABABA";
         assertEquals(expected, actual);
     }
