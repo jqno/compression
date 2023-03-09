@@ -3,10 +3,11 @@ package nl.jqno.compression.algorithms;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import org.junit.jupiter.api.Test;
-
 import nl.jqno.compression.streams.IntListInputCodeStream;
 import nl.jqno.compression.streams.IntListOutputCodeStream;
+import nl.jqno.compression.streams.StringInputSymbolStream;
+import nl.jqno.compression.streams.StringOutputSymbolStream;
+import org.junit.jupiter.api.Test;
 
 public class LzwTest {
 
@@ -14,37 +15,45 @@ public class LzwTest {
 
     @Test
     void compress_happyPath() {
-        var input = "ABBABBBABBA";
+        var in = new StringInputSymbolStream("ABBABBBABBA");
         var out = new IntListOutputCodeStream();
-        sut.compress(input, out);
         var expected = List.of(65, 66, 66, 257, 258, 260, 65);
+
+        sut.compress(in, out);
+
         assertEquals(expected, out.getCodes());
     }
 
     @Test
     void compress_edgeCase() {
-        var input = "ABABABA";
+        var in = new StringInputSymbolStream("ABABABA");
         var out = new IntListOutputCodeStream();
-        sut.compress(input, out);
         var expected = List.of(65, 66, 257, 259);
+
+        sut.compress(in, out);
+
         assertEquals(expected, out.getCodes());
     }
 
     @Test
     void decompress_happyPath() {
-        var input = List.of(65, 66, 66, 257, 258, 260, 65);
-        var in = new IntListInputCodeStream(input);
-        var actual = sut.decompress(in);
+        var in = new IntListInputCodeStream(List.of(65, 66, 66, 257, 258, 260, 65));
+        var out = new StringOutputSymbolStream();
         var expected = "ABBABBBABBA";
-        assertEquals(expected, actual);
+
+        sut.decompress(in, out);
+
+        assertEquals(expected, out.getOutput());
     }
 
     @Test
     void decompress_edgeCase() {
-        var input = List.of(65, 66, 257, 259);
-        var in = new IntListInputCodeStream(input);
-        var actual = sut.decompress(in);
+        var in = new IntListInputCodeStream(List.of(65, 66, 257, 259));
+        var out = new StringOutputSymbolStream();
         var expected = "ABABABA";
-        assertEquals(expected, actual);
+
+        sut.decompress(in, out);
+
+        assertEquals(expected, out.getOutput());
     }
 }
