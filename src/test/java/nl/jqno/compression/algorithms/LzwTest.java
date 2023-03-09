@@ -1,4 +1,4 @@
-package nl.jqno.compression;
+package nl.jqno.compression.algorithms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

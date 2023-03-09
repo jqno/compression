@@ -1,4 +1,4 @@
-package nl.jqno.compression;
+package nl.jqno.compression.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
