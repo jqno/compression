@@ -1,5 +1,6 @@
 package nl.jqno.compression.algorithms;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import nl.jqno.compression.streams.InputCodeStream;
@@ -11,7 +12,7 @@ public class Lzw {
 
     private static final int EOF_CODE = 256;
 
-    public void compress(InputSymbolStream in, OutputCodeStream out) {
+    public void compress(InputSymbolStream in, OutputCodeStream out) throws IOException {
         var map = new HashMap<String, Integer>();
         for (int i = 0; i < EOF_CODE; i++) {
             map.put(Character.toString(i), i);

@@ -2,6 +2,7 @@ package nl.jqno.compression.algorithms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 import nl.jqno.compression.streams.IntListInputCodeStream;
 import nl.jqno.compression.streams.IntListOutputCodeStream;
@@ -14,7 +15,7 @@ public class LzwTest {
     private Lzw sut = new Lzw();
 
     @Test
-    void compress_happyPath() {
+    void compress_happyPath() throws IOException {
         var in = new StringInputSymbolStream("ABBABBBABBA");
         var out = new IntListOutputCodeStream();
         var expected = List.of(65, 66, 66, 257, 258, 260, 65);
@@ -25,7 +26,7 @@ public class LzwTest {
     }
 
     @Test
-    void compress_edgeCase() {
+    void compress_edgeCase() throws IOException {
         var in = new StringInputSymbolStream("ABABABA");
         var out = new IntListOutputCodeStream();
         var expected = List.of(65, 66, 257, 259);

@@ -1,5 +1,8 @@
 package nl.jqno.compression.streams;
 
-public interface OutputCodeStream {
-    void write(int code);
+import java.io.IOException;
+
+public interface OutputCodeStream extends AutoCloseable {
+    void write(int code) throws IOException;
 }
+

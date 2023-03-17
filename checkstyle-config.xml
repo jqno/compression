@@ -51,12 +51,9 @@
         </module>
         <module name="IllegalImport"/>
         <module name="IllegalThrows"/>
-        <module name="IllegalToken">
-            <property name="tokens" value="INC,DEC,BSR,BSR_ASSIGN,SL,SL_ASSIGN,SR,SR_ASSIGN"/>
-        </module>
         <module name="IllegalTokenText">
             <property name="tokens" value="NUM_INT,NUM_LONG"/>
-            <property name="format" value="^0[^lx]"/>
+            <property name="format" value="^0[^lxb]"/>
             <property name="ignoreCase" value="true"/>
             <property name="message" value="Octal integer literals are not allowed"/>
         </module>
