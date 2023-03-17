@@ -1,4 +1,7 @@
 package nl.jqno.compression.streams;
 
-public interface InputCodeStream extends Iterable<Integer> {
+import java.io.IOException;
+
+public interface InputCodeStream {
+    int read() throws IOException;
 }

@@ -12,13 +12,15 @@ import org.junit.jupiter.api.Test;
 
 public class LzwTest {
 
+    private static final int EOF_CODE = 256;
+
     private Lzw sut = new Lzw();
 
     @Test
     void compress_happyPath() throws IOException {
         var in = new StringInputSymbolStream("ABBABBBABBA");
         var out = new IntListOutputCodeStream();
-        var expected = List.of(65, 66, 66, 257, 258, 260, 65);
+        var expected = List.of(65, 66, 66, 257, 258, 260, 65, EOF_CODE);
 
         sut.compress(in, out);
 
@@ -29,7 +31,7 @@ public class LzwTest {
     void compress_edgeCase() throws IOException {
         var in = new StringInputSymbolStream("ABABABA");
         var out = new IntListOutputCodeStream();
-        var expected = List.of(65, 66, 257, 259);
+        var expected = List.of(65, 66, 257, 259, EOF_CODE);
 
         sut.compress(in, out);
 
@@ -37,8 +39,8 @@ public class LzwTest {
     }
 
     @Test
-    void decompress_happyPath() {
-        var in = new IntListInputCodeStream(List.of(65, 66, 66, 257, 258, 260, 65));
+    void decompress_happyPath() throws IOException {
+        var in = new IntListInputCodeStream(List.of(65, 66, 66, 257, 258, 260, 65, EOF_CODE));
         var out = new StringOutputSymbolStream();
         var expected = "ABBABBBABBA";
 
@@ -48,8 +50,8 @@ public class LzwTest {
     }
 
     @Test
-    void decompress_edgeCase() {
-        var in = new IntListInputCodeStream(List.of(65, 66, 257, 259));
+    void decompress_edgeCase() throws IOException {
+        var in = new IntListInputCodeStream(List.of(65, 66, 257, 259, EOF_CODE));
         var out = new StringOutputSymbolStream();
         var expected = "ABABABA";
 

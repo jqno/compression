@@ -32,9 +32,10 @@ public class Lzw {
             }
         }
         out.write(map.get(current));
+        out.write(EOF_CODE);
     }
 
-    public void decompress(InputCodeStream in, OutputSymbolStream out) {
+    public void decompress(InputCodeStream in, OutputSymbolStream out) throws IOException {
         var map = new HashMap<Integer, String>();
         for (int i = 0; i < EOF_CODE; i++) {
             map.put(i, Character.toString(i));
@@ -42,7 +43,8 @@ public class Lzw {
 
         var nextCode = EOF_CODE + 1;
         String previous = null;
-        for (int i : in) {
+        int i = in.read();
+        while (i != EOF_CODE) {
             if (!map.containsKey(i)) {
                map.put(i, previous + previous.charAt(0));
             }
@@ -52,6 +54,7 @@ public class Lzw {
                 nextCode++;
             }
             previous = map.get(i);
+            i = in.read();
         }
     }
 }
