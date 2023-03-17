@@ -17,4 +17,7 @@ public class IntListInputCodeStream implements InputCodeStream {
         }
         return codes.remove(0);
     }
+
+    @Override
+    public void close() {}
 }
