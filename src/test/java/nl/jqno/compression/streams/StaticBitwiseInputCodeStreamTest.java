@@ -1,9 +1,7 @@
 package nl.jqno.compression.streams;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,9 +30,8 @@ public class StaticBitwiseInputCodeStreamTest {
         byte[] inputData = { 42, 0 }; // extra 0 for the 9th bit
         createSut(inputData);
 
-        assertTrue(sut.hasNext());
         assertEquals(42, sut.read());
-        assertFalse(sut.hasNext());
+        assertThrows(IOException.class, () -> sut.read());
     }
 
     @Test
@@ -55,7 +52,7 @@ public class StaticBitwiseInputCodeStreamTest {
         createSut(inputData);
 
         var actual = new ArrayList<Integer>();
-        while (sut.hasNext()) {
+        for (int i = 0; i < expected.size(); i++) {
             actual.add(sut.read());
         }
 
