@@ -40,5 +40,8 @@ public class StaticBitwiseOutputCodeStream implements OutputCodeStream {
     @Override
     public void close() throws IOException {
         flush(0);
+        if (out != null) {
+            out.close();
+        }
     }
 }

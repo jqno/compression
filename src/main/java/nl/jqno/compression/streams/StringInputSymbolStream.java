@@ -26,4 +26,7 @@ public class StringInputSymbolStream implements InputSymbolStream {
             }
         };
     }
+
+    @Override
+    public void close() {}
 }

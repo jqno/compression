@@ -11,4 +11,7 @@ public class StringOutputSymbolStream implements OutputSymbolStream {
     public String getOutput() {
         return builder.toString();
     }
+
+    @Override
+    public void close() {}
 }

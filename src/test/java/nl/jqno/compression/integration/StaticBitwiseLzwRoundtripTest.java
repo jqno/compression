@@ -5,14 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import nl.jqno.compression.algorithms.Lzw;
 import nl.jqno.compression.streams.StaticBitwiseInputCodeStream;
 import nl.jqno.compression.streams.StaticBitwiseOutputCodeStream;
 import nl.jqno.compression.streams.StringInputSymbolStream;
 import nl.jqno.compression.streams.StringOutputSymbolStream;
+import org.junit.jupiter.api.Test;
 
 public class StaticBitwiseLzwRoundtripTest {
 
@@ -36,27 +34,32 @@ public class StaticBitwiseLzwRoundtripTest {
     }
 
     private void assertRoundtrip(String symbols) throws IOException {
-        var backingCompressOut = new ByteArrayOutputStream();
-        var compressIn = new StringInputSymbolStream(symbols);
-        var compressOut = new StaticBitwiseOutputCodeStream(backingCompressOut, MAX_CODE);
+        byte[] compressed = compress(symbols);
+        var actual = decompress(compressed);
 
-        sut.compress(compressIn, compressOut);
-
-        compressOut.close();
-        backingCompressOut.close();
-
-        byte[] compressed = backingCompressOut.toByteArray();
-
-        var backingDecompressIn = new ByteArrayInputStream(compressed);
-        var decompressIn = new StaticBitwiseInputCodeStream(backingDecompressIn, MAX_CODE);
-        var decompressOut = new StringOutputSymbolStream();
-
-        sut.decompress(decompressIn, decompressOut);
-
-        decompressIn.close();
-        backingDecompressIn.close();
-
-        var actual = decompressOut.getOutput();
         assertEquals(symbols, actual);
+    }
+
+    private byte[] compress(String symbols) throws IOException {
+        var backingCompressOut = new ByteArrayOutputStream();
+        try (
+            var compressIn = new StringInputSymbolStream(symbols);
+            var compressOut = new StaticBitwiseOutputCodeStream(backingCompressOut, MAX_CODE)
+        ) {
+            sut.compress(compressIn, compressOut);
+        }
+
+        return backingCompressOut.toByteArray();
+    }
+
+    private String decompress(byte[] compressed) throws IOException {
+        var backingDecompressIn = new ByteArrayInputStream(compressed);
+        try (
+            var decompressOut = new StringOutputSymbolStream();
+            var decompressIn = new StaticBitwiseInputCodeStream(backingDecompressIn, MAX_CODE)
+        ) {
+            sut.decompress(decompressIn, decompressOut);
+            return decompressOut.getOutput();
+        }
     }
 }

@@ -12,10 +12,10 @@ public class IntListOutputCodeStream implements OutputCodeStream {
         codes.add(code);
     }
 
-    @Override
-    public void close() {}
-
     public List<Integer> getCodes() {
         return Collections.unmodifiableList(codes);
     }
+
+    @Override
+    public void close() {}
 }

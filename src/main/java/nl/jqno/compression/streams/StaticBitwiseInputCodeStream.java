@@ -46,5 +46,9 @@ public class StaticBitwiseInputCodeStream implements InputCodeStream {
     }
 
     @Override
-    public void close() {}
+    public void close() throws IOException {
+        if (input != null) {
+            input.close();
+        }
+    }
 }
