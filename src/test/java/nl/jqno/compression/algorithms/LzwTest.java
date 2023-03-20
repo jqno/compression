@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 public class LzwTest {
 
     private static final int EOF_CODE = 256;
+    private static final int MAX_CODE = 0x1FF; // 511; represents 9 bits
 
-    private Lzw sut = new Lzw();
+    private Lzw sut = new Lzw(MAX_CODE);
 
     @Test
     void compress_happyPath() throws IOException {

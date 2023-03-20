@@ -12,6 +12,12 @@ public class Lzw {
 
     private static final int EOF_CODE = 256;
 
+    private final int maxCode;
+
+    public Lzw(int maxCode) {
+        this.maxCode = maxCode;
+    }
+
     public void compress(InputSymbolStream in, OutputCodeStream out) throws IOException {
         var map = new HashMap<String, Integer>();
         for (int i = 0; i < EOF_CODE; i++) {
@@ -25,8 +31,10 @@ public class Lzw {
             if (map.containsKey(candidate)) {
                 current = candidate;
             } else {
-                map.put(candidate, nextCode);
-                nextCode++;
+                if (nextCode <= maxCode) {
+                    map.put(candidate, nextCode);
+                    nextCode++;
+                }
                 out.write(map.get(current));
                 current = Character.toString(c);
             }
@@ -49,7 +57,7 @@ public class Lzw {
                map.put(i, previous + previous.charAt(0));
             }
             out.write(map.get(i));
-            if (previous != null) {
+            if (previous != null && nextCode <= maxCode) {
                 map.put(nextCode, previous + map.get(i).charAt(0));
                 nextCode++;
             }

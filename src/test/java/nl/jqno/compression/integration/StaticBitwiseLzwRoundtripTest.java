@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import nl.jqno.compression.algorithms.Lzw;
+import nl.jqno.compression.data.Data;
 import nl.jqno.compression.streams.StaticBitwiseInputCodeStream;
 import nl.jqno.compression.streams.StaticBitwiseOutputCodeStream;
 import nl.jqno.compression.streams.StringInputSymbolStream;
@@ -16,7 +17,7 @@ public class StaticBitwiseLzwRoundtripTest {
 
     private static final int MAX_CODE = 0x1FF; // 511; represents 9 bits
 
-    private Lzw sut = new Lzw();
+    private Lzw sut = new Lzw(MAX_CODE);
 
     @Test
     void roundtrip_happyPath() throws IOException {
@@ -31,6 +32,11 @@ public class StaticBitwiseLzwRoundtripTest {
     @Test
     void roundtrip_noCompression() throws IOException {
         assertRoundtrip("The quick brown fox jumps over the lazy dog");
+    }
+
+    @Test
+    void roundtrip_longText() throws IOException {
+        assertRoundtrip(Data.LONG_TEXT);
     }
 
     private void assertRoundtrip(String symbols) throws IOException {
