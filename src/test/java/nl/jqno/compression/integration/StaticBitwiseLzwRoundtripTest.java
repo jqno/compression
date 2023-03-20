@@ -1,7 +1,6 @@
 package nl.jqno.compression.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,12 +25,25 @@ public class StaticBitwiseLzwRoundtripTest {
         assertRoundtrip("ABBABBBABBA");
     }
 
+    @Test
+    void roundtrip_edgeCase() throws IOException {
+        assertRoundtrip("ABABABA");
+    }
+
+    @Test
+    void roundtrip_noCompression() throws IOException {
+        assertRoundtrip("The quick brown fox jumps over the lazy dog");
+    }
+
     private void assertRoundtrip(String symbols) throws IOException {
         var backingCompressOut = new ByteArrayOutputStream();
         var compressIn = new StringInputSymbolStream(symbols);
         var compressOut = new StaticBitwiseOutputCodeStream(backingCompressOut, MAX_CODE);
 
         sut.compress(compressIn, compressOut);
+
+        compressOut.close();
+        backingCompressOut.close();
 
         byte[] compressed = backingCompressOut.toByteArray();
 
@@ -41,8 +53,10 @@ public class StaticBitwiseLzwRoundtripTest {
 
         sut.decompress(decompressIn, decompressOut);
 
+        decompressIn.close();
+        backingDecompressIn.close();
+
         var actual = decompressOut.getOutput();
-        assertTrue(compressed.length < symbols.length());
         assertEquals(symbols, actual);
     }
 }
